@@ -19,7 +19,7 @@ def storeMessage(my_count, friend_count, db_connect, connect_cursor, data):
     # 创建消息存储表（若不存在）
     # print('table_name = ', table_name)
     # https://blog.csdn.net/k346k346/article/details/51892492
-    # 将消息插入到表中
+    # 将消息插入到表中,然后返回
     try:
         sql = "INSERT INTO %s (time, count, message) VALUES ('%s', '%s', '%s')" % (table_name, data.get_time(), data.get_my_count(), data.get_message())
         connect_cursor.execute(sql)
@@ -137,13 +137,10 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
             return -1
 
 
-
-
-
 def main():
     try:
         # 打开数据库
-        db_connect = pymysql.connect("localhost", "root", "ljgubuntu", "test")
+        db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
         connect_cursor = db_connect.cursor()
     except:
         print('open db file')

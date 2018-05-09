@@ -10,7 +10,7 @@ udp_register_server_socket.bind(ADDR)
 
 def rgs_handler(data, register_client_addr):
     '''打开数据库---》遍历注册表----》查看是否已经注册'''
-    db_connect = pymysql.connect("localhost", "root", "ljgubuntu", "test")
+    db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
     connect_cursor = db_connect.cursor()
     sql = "SELECT count FROM newTable"
     connect_cursor.execute(sql)
@@ -34,7 +34,7 @@ def rgs_handler(data, register_client_addr):
 
 def main():
     # 打开数据库，如没有则创建
-    db_connect = pymysql.connect("localhost", "root", "ljgubuntu", "test")
+    db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
     connect_cursor = db_connect.cursor()
     # 创建注册表（若不存在）
     try:
@@ -51,7 +51,6 @@ def main():
         connect_cursor.execute(sql)
     except:
         print("Create table failed")
-
 
     connect_cursor.close()
     db_connect.close()
@@ -71,7 +70,6 @@ def main():
 
         data.set_status(status)
         udp_register_server_socket.sendto(data.rgs_struct_pack(), register_client_addr)
-
 
     udp_register_server_socket.close()
 

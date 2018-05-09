@@ -52,7 +52,7 @@ def login_handler(data, db_connect, connect_cursor):
 def main():
     try:
         # 打开数据库
-        db_connect = pymysql.connect("localhost", "root", "ljgubuntu", "test")
+        db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
         connect_cursor = db_connect.cursor()
     except:
         print('open db file')

@@ -127,7 +127,7 @@ class ChatWindow(QtWidgets.QWidget):
         # 获取当前系统时间
         time = QDateTime.currentDateTime()
         # 时间显示格式
-        time_str = time.toString("yyyy-mm-dd hh:mm:ss")
+        time_str = time.toString("yyyy-MM-dd hh:mm:ss")
         # 将消息显示到聊天Edit中
         self.show_msg_textEdit.append(time_str + ":" + self.myname_label.text() + ":")
         self.show_msg_textEdit.append(message)

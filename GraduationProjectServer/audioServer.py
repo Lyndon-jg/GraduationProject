@@ -10,7 +10,7 @@ udpSerSock.bind(ADDR)
 def audio_handler(data, audio_client_addr):
     '''消息处理函数,并返回一个值'''
     # 打开数据库
-    db_connect = pymysql.connect("localhost", "root", "ljgubuntu", "test")
+    db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
     connect_cursor = db_connect.cursor()
     # 判断语音消息的状态
     if data.get_audio_status() == AUDIO_STATUS_REJECT:

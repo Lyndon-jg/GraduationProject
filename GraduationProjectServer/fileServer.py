@@ -102,7 +102,6 @@ def main():
                 # print(files)  # 当前路径下所有非目录子文件
                 # print('=================================')
                 udpSerSock.sendto(str(files).encode('utf-8'), file_client_addr)
-                print("1")
                 break
         else:
             print('file:not update')
