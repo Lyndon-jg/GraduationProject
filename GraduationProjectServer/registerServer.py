@@ -12,7 +12,7 @@ def rgs_handler(data, register_client_addr):
     '''打开数据库---》遍历注册表----》查看是否已经注册'''
     db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
     connect_cursor = db_connect.cursor()
-    sql = "SELECT count FROM newTable"
+    sql = "SELECT count FROM userTable"
     connect_cursor.execute(sql)
     result = connect_cursor.fetchall()
     for row in result:
@@ -23,10 +23,21 @@ def rgs_handler(data, register_client_addr):
             return REGISTER_STATUS_FAIL
     # 账户不存在，可注册
     # 将注册帐号插入注册表
-    sql = "INSERT INTO newTable (count, passwd, status, ip, chatPagePort, audioPagePort, audioClientPort, audioServerPort,chatRecordPagePort)" \
+    sql = "INSERT INTO userTable (count, passwd, status, ip, chatPagePort, audioPagePort, audioClientPort, audioServerPort,chatRecordPagePort)" \
           " VALUES ('%s','%s',0,'%s',%d,0,0,0,0)"%(data.get_count(),data.get_passwd(),register_client_addr[0],register_client_addr[1])
     # print(sql)
     connect_cursor.execute(sql)
+    # 给新注册的用户聊天记录创建表
+    try:
+        sql = """CREATE TABLE IF NOT EXISTS %s
+    			(time CHAR(20) NOT NULL,
+                first_count CHAR(64) NOT NULL,
+                second_count CHAR(64) NOT NULL,
+                message VARCHAR(1024) NOT NULL)"""%(data.get_count()+'_chatRecord')
+        connect_cursor.execute(sql)
+    except:
+        print("Create chatRecord table for user failed")
+
     db_connect.commit()
     db_connect.close()
     return REGISTER_STATUS_OK
@@ -38,7 +49,7 @@ def main():
     connect_cursor = db_connect.cursor()
     # 创建注册表（若不存在）
     try:
-        sql = """CREATE TABLE IF NOT EXISTS newTable
+        sql = """CREATE TABLE IF NOT EXISTS userTable
     			(count CHAR(64) NOT NULL,
     			passwd CHAR(64) NOT NULL,
     			status INT NOT NULL,

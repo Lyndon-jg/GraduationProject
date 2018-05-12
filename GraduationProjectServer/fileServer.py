@@ -12,9 +12,7 @@ ADDR = ("",FILE_SERVER_PORT_2)
 udpSerSock = socket(AF_INET,SOCK_DGRAM)
 udpSerSock.bind(ADDR)
 
-
 class fileServer(socketserver.StreamRequestHandler):
-
     def handle(self):
         self.file_data = FileStruct()
         print('connected from:', self.client_address)
@@ -77,7 +75,6 @@ class fileServer(socketserver.StreamRequestHandler):
                     print(e)
                 finally:
                     self.request.close()
-
 
 
 class fileServerth(threading.Thread):

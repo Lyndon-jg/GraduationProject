@@ -36,11 +36,11 @@ class ChatRecordWindow(QtWidgets.QWidget):
         rcv_data, chat_server_ip, chat_server_port = self.udp_client_socket.readDatagram(BUFFER_SIZE)
         self.data.set_rcv_data(rcv_data)
         # 将消息显示到Edit中
-        if self.data.get_message() != 'xxx':
-            self.textEdit.append(self.data.get_time() + ":" + self.data.get_my_count() + ":")
-            self.textEdit.append(self.data.get_message())
-        else:
-            self.textEdit.append('无消息')
+        # if self.data.get_message() != 'xxx':
+        self.textEdit.append(self.data.get_time() + "     " + self.data.get_my_count() + ":")
+        self.textEdit.append(self.data.get_message())
+        # else:
+            # self.textEdit.append('无消息')
 
     def updatePort(self):
         '''告知服务器，更新我的聊天记录界面端口'''

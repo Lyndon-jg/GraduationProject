@@ -15,7 +15,7 @@ def audio_handler(data, audio_client_addr):
     # 判断语音消息的状态
     if data.get_audio_status() == AUDIO_STATUS_REJECT:
         print("AUDIO_STATUS_REJECT")
-        sql = "SELECT ip,audioPagePort FROM newTable where count = '%s'" % (data.get_friend_count())
+        sql = "SELECT ip,audioPagePort FROM userTable where count = '%s'" % (data.get_friend_count())
         connect_cursor.execute(sql)
         result = connect_cursor.fetchall()
         print("result:", result)
@@ -30,7 +30,7 @@ def audio_handler(data, audio_client_addr):
             return -1
     elif data.get_audio_status() == AUDIO_STATUS_ACCEPT:
         print("AUDIO_STATUS_ACCEPT")
-        sql = "SELECT ip,audioPagePort FROM newTable where count = '%s'" % (data.get_friend_count())
+        sql = "SELECT ip,audioPagePort FROM userTable where count = '%s'" % (data.get_friend_count())
         connect_cursor.execute(sql)
         result = connect_cursor.fetchall()
         print("result:", result)
@@ -46,16 +46,16 @@ def audio_handler(data, audio_client_addr):
             return -1
     elif data.get_audio_status() == AUDIO_STATUS_UPDATE_SERVER_PORT:
         print("AUDIO_STATUS_UPDATE_SERVER_PORT")
-        sql = "UPDATE newTable SET audioServerPort = %d WHERE count = '%s'" % (data.get_audio_server_port(), data.get_my_count())
+        sql = "UPDATE userTable SET audioServerPort = %d WHERE count = '%s'" % (data.get_audio_server_port(), data.get_my_count())
         connect_cursor.execute(sql)
         db_connect.commit()
     elif data.get_audio_status() == AUDIO_STATUS_UPDATE_CLIENT_PORT:
         print("AUDIO_STATUS_UPDATE_CLIENT_PORT")                                # udp port
-        sql = "UPDATE newTable SET audioClientPort = %d WHERE count = '%s'" % (audio_client_addr[1], data.get_my_count())
+        sql = "UPDATE userTable SET audioClientPort = %d WHERE count = '%s'" % (audio_client_addr[1], data.get_my_count())
         connect_cursor.execute(sql)
         db_connect.commit()
 
-        sql = "SELECT ip,audioServerPort FROM newTable where count = '%s'" % (data.get_friend_count())
+        sql = "SELECT ip,audioServerPort FROM userTable where count = '%s'" % (data.get_friend_count())
         connect_cursor.execute(sql)
         result = connect_cursor.fetchall()
         print("result:", result)
@@ -71,7 +71,7 @@ def audio_handler(data, audio_client_addr):
             return -1
     elif data.get_audio_status() == AUDIO_STATUS_UPDATE:
         print("AUDIO_STATUS_UPDATE")
-        sql = "UPDATE newTable SET audioPagePort = %d WHERE count = '%s'" % (audio_client_addr[1], data.get_my_count())
+        sql = "UPDATE userTable SET audioPagePort = %d WHERE count = '%s'" % (audio_client_addr[1], data.get_my_count())
         connect_cursor.execute(sql)
         db_connect.commit()
 

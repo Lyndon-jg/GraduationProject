@@ -11,7 +11,7 @@ import pymysql
 
 class HouTaiWindow(QtWidgets.QWidget):
     # 打开数据库
-    db_connect = pymysql.connect("localhost", "root", "ljgubuntu", "test")
+    db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
     connect_cursor = db_connect.cursor()
     print("connect db ok")
 
@@ -53,9 +53,10 @@ class HouTaiWindow(QtWidgets.QWidget):
         self.tableWidget.setRowCount(0)
         self.tableWidget.clearContents()
         #  取出所有的数据
-        sql = "SELECT * FROM newTable"
+        sql = "SELECT * FROM userTable"
         self.connect_cursor.execute(sql)
         result = self.connect_cursor.fetchall()
+        # print(result)
         # 在线 非在线人数计数
         all_count_num = 0
         online_count_num = 0
@@ -78,6 +79,7 @@ class HouTaiWindow(QtWidgets.QWidget):
             self.tableWidget.setItem(row_count, 3, self.newItem3)
             self.tableWidget.setItem(row_count, 4, self.newItem4)
 
+
         self.all_num_label.setText('总人数: %d'%all_count_num)
         self.online_label.setText('在线: %d'%online_count_num)
 
@@ -87,13 +89,13 @@ class HouTaiWindow(QtWidgets.QWidget):
         # 若edit内容非空
         if self.count_lineEdit.text() != '' and self.passwd_lineEdit.text() != '':
             # 查找count是否已经被注册
-            sql = "SELECT count FROM newTable WHERE count=%s"%(self.count_lineEdit.text())
+            sql = "SELECT count FROM userTable WHERE count='%s'"%(self.count_lineEdit.text())
             self.connect_cursor.execute(sql)
             result = self.connect_cursor.fetchall()
             # 如果没有被注册
             if len(result) == 0:
                 # 插入帐号
-                sql = "INSERT INTO newTable VALUES(%s,%s,0,'0','0','0','0','0')"%(self.count_lineEdit.text(),self.passwd_lineEdit.text())
+                sql = "INSERT INTO userTable VALUES('%s','%s',0,'0',0,'0','0','0','0')"%(self.count_lineEdit.text(),self.passwd_lineEdit.text())
                 self.connect_cursor.execute(sql)
                 self.db_connect.commit()
                 QMessageBox.warning(self, ("Warning"), ("帐号已插入"), QMessageBox.Yes)
@@ -113,7 +115,7 @@ class HouTaiWindow(QtWidgets.QWidget):
         if self.count_lineEdit_2.text() != '':
             print("connect db ok")
             # 查找count是否已经被注册
-            sql = "SELECT count FROM newTable WHERE count=%s" % (self.count_lineEdit_2.text())
+            sql = "SELECT count FROM userTable WHERE count='%s'" % (self.count_lineEdit_2.text())
             self.connect_cursor.execute(sql)
             result = self.connect_cursor.fetchall()
             # 如果没有被注册
@@ -122,7 +124,7 @@ class HouTaiWindow(QtWidgets.QWidget):
             # 如果已被注册
             elif len(result) == 1:
                 # 删除帐号
-                sql = "DELETE FROM  newTable WHERE count=%s"%(self.count_lineEdit_2.text())
+                sql = "DELETE FROM  userTable WHERE count='%s'"%(self.count_lineEdit_2.text())
                 self.connect_cursor.execute(sql)
                 self.db_connect.commit()
                 QMessageBox.warning(self, ("Warning"), ("帐号删除成功"), QMessageBox.Yes)
