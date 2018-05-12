@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import (QPixmap, QBrush, QColor)
 from PyQt5.QtCore import (QTimer, QDateTime, pyqtSignal, Qt)
 from PyQt5.QtWidgets import (QMessageBox, QTreeWidgetItem)
 # 加载ui文件 
@@ -58,7 +58,6 @@ class ChatWindow(QtWidgets.QWidget):
         # 收到服务器消息链接到 receiveMessage槽函数
         self.udp_client_socket.readyRead.connect(self.receiveMessage)
 
-
     #-------------------------------------------语音
         # 语音界面
         self.audio_window = audioPage.AudioWindow()
@@ -68,7 +67,6 @@ class ChatWindow(QtWidgets.QWidget):
     # -------------------------------------------语音
         self.update_ip_port()
         self.give_my_friends()
-
 
 
     def timeout(self):
@@ -129,7 +127,7 @@ class ChatWindow(QtWidgets.QWidget):
         # 时间显示格式
         time_str = time.toString("yyyy-MM-dd hh:mm:ss")
         # 将消息显示到聊天Edit中
-        self.show_msg_textEdit.append(time_str + ":" + self.myname_label.text() + ":")
+        self.show_msg_textEdit.append(time_str + "    " + self.myname_label.text() + ":")
         self.show_msg_textEdit.append(message)
         self.chat_textEdit.clear()
         # 将消息发送给服务器
@@ -161,13 +159,24 @@ class ChatWindow(QtWidgets.QWidget):
         # 判断接收到的消息的类型
         if self.data.get_chat_status() == CHAT_STATUS_MSG:
             print("receive_message:CHAT_STATUS_MSG")
-            # 获取当前系统时间
-            time = QDateTime.currentDateTime()
-            # 时间显示格式
-            time_str = time.toString("yyyy-mm-dd hh:mm:ss")
-            self.show_msg_textEdit.append(time_str + ":" + self.data.get_friend_count() + ":")
+            if self.friendname_label.text() == self.data.get_friend_count():
+                # 获取当前系统时间
+                time = QDateTime.currentDateTime()
+                # 时间显示格式
+                time_str = time.toString("yyyy-mm-dd hh:mm:ss")
+                self.show_msg_textEdit.append(time_str + "    " + self.data.get_friend_count() + ":")
+                self.show_msg_textEdit.append(self.data.get_message())
+                # print("chat_client：好友发送的消息显示完毕")
+            else:
+                items = self.friends_treeWidget.findItems(self.data.get_friend_count(), Qt.MatchRecursive, 0)
+                # items[0].setText(1, "消息")
+                items[0].setBackground(0, QBrush(QColor("#00FF00")))
+        elif self.data.get_chat_status() == CHAT_STATUS_ONEDAY_MESSAGE:
+            print("receive_message:CHAT_STATUS_ONEDAY_MESSAGE")
+            self.data.set_rcv_data(rcv_data)
+            # 将消息显示到Edit中
+            self.show_msg_textEdit.append(self.data.get_time() + "    " + self.data.get_my_count() + ":")
             self.show_msg_textEdit.append(self.data.get_message())
-            # print("chat_client：好友发送的消息显示完毕")
         elif self.data.get_chat_status() == CHAT_STATUS_LIST:
             print("receive_message:CHAT_STATUS_LIST")
             message = self.data.get_message().split("+")
@@ -196,9 +205,23 @@ class ChatWindow(QtWidgets.QWidget):
 
     def on_treeWidget_doubleClicked(self):
         item = self.friends_treeWidget.currentItem()
+        item.setBackground(0, QBrush(QColor("#FFFFFF")))
         self.friendname_label.setText(item.text(0))
         self.chat_textEdit.clear()
         self.show_msg_textEdit.clear()
+        # 获取当前系统时间
+        time = QDateTime.currentDateTime()
+        # 时间显示格式
+        time_str = time.toString("yyyy-MM-dd hh:mm:ss")
+        # 将消息发送给服务器,让其返回今天和好友的聊天记录
+        self.data.set_my_count(self.myname_label.text())
+        self.data.set_friend_count(self.friendname_label.text())
+        self.data.set_time(time_str)
+        self.data.set_chat_status(CHAT_STATUS_ONEDAY_MESSAGE)
+        self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP),
+                                             CHAT_SERVER_PORT)
+
+
 
     def give_my_friends(self):
         '''给系统要好友账户显示出来'''

@@ -20,7 +20,7 @@ def storeMessage(db_connect, connect_cursor, data):
         db_connect.commit()
     # 若插入失败
     except:
-        print('消息插入失败')
+        print('消息插入失败1')
     try:
         sql = "INSERT INTO %s (time, first_count, second_count, message) VALUES ('%s', '%s','%s', '%s')" % (
             data.get_friend_count() + '_chatRecord', data.get_time(), data.get_my_count(), data.get_friend_count(), data.get_message())
@@ -28,41 +28,8 @@ def storeMessage(db_connect, connect_cursor, data):
         db_connect.commit()
     # 若插入失败
     except:
-        print('消息插入失败')
-    '''
-    if my_count > friend_count:
-        table_name = my_count+'_'+friend_count
-    else:
-        table_name = friend_count + '_' + my_count
-    # 创建消息存储表（若不存在）
-    # print('table_name = ', table_name)
-    # https://blog.csdn.net/k346k346/article/details/51892492
-    # 将消息插入到表中,然后返回
-    try:
-        sql = "INSERT INTO %s (time, count, message) VALUES ('%s', '%s', '%s')" % (table_name, data.get_time(), data.get_my_count(), data.get_message())
-        connect_cursor.execute(sql)
-        db_connect.commit()
-        return 0
-    # 若插入失败
-    except:
-        # 判断表是否存在，并创建表
-        try:
-            sql = """CREATE TABLE IF NOT EXISTS %s
-                        (time CHAR(20) NOT NULL,
-                        count CHAR(64) NOT NULL,
-                        message VARCHAR(1024) NOT NULL)""" % (table_name)
-            connect_cursor.execute(sql)
-        # 创建失败
-        except:
-            print("Create table failed")
-            return -1
-    # 创建表成功，重新插入
-    sql = "INSERT INTO %s (time, count, message) VALUES ('%s', '%s', '%s')" % (
-    table_name, data.get_time(), data.get_my_count(), data.get_message())
-    connect_cursor.execute(sql)
-    db_connect.commit()
-    return 0
-    '''
+        print('消息插入失败2')
+
 
 def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
     '''消息处理函数,并返回一个值'''
@@ -90,6 +57,24 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
         elif len(result) == 0:
             print('未找到好友')
             return -1
+    elif data.get_chat_status() == CHAT_STATUS_ONEDAY_MESSAGE:
+        table_name = data.get_my_count()+'_chatRecord'
+        sql = "SELECT time, first_count, second_count, message FROM %s WHERE (first_count='%s' and second_count='%s') or (first_count='%s' and second_count='%s')" % (
+        table_name, data.get_my_count(), data.get_friend_count(), data.get_friend_count(), data.get_my_count())
+        connect_cursor.execute(sql)
+        result = connect_cursor.fetchall()
+        if len(result) != 0:
+            for row in result:
+                if row[0][0:11] == data.get_time()[0:11]:
+                    # print(row[0][0:11], data.get_time()[0:11])
+                    data.set_time(row[0])
+                    data.set_my_count(row[1])
+                    data.set_friend_count(row[2])
+                    data.set_message(row[3])
+                    udpSerSock.sendto(data.chat_struct_pack(), chat_client_addr)
+                else:
+                    break
+        pass
     # 获得自己的好友列表
     elif data.get_chat_status() == CHAT_STATUS_LIST:
         print("CHAT_STATUS_LIST")
@@ -147,11 +132,6 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
                     data.set_friend_count(row[2])
                     data.set_message(row[3])
                     udpSerSock.sendto(data.chat_struct_pack(), chat_record_addr)
-            '''
-            except:
-                data.set_message('xxx')
-                udpSerSock.sendto(data.chat_struct_pack(), chat_record_addr)
-            '''
         elif len(result) == 0:
             print('未找到好友')
             return -1

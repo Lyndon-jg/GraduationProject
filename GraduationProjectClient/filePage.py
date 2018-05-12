@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import (QMessageBox, QTableWidgetItem)
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import (QTimer, pyqtSignal, Qt)
 from PyQt5.QtNetwork import (QUdpSocket, QHostAddress)
+# 正则，匹配文件路径
+import re
 import fileUpDownload
 
 
@@ -82,6 +84,8 @@ class FileWindow(QtWidgets.QWidget):
         '''上传文件按钮槽函数，输入文件路径，发送文件到服务器'''
         # 获取输入框中的文件路径
         self.file_path_name = self.up_lineEdit.text()
+        self.file_path_name = self.file_path_name.replace('%20', ' ')
+        self.file_path_name = self.file_path_name[7:-2]
         # 上传文件
         fileclient = fileUpDownload.fileClient((FILE_SERVER_IP, FILE_SERVER_PORT))
         fileclient.sendFile(self.file_path_name, 'file')
