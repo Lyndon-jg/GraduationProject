@@ -9,8 +9,8 @@ class fileClient():
         self.file_data = FileStruct()
         self.file_name = ''
 
-    def sendFile(self, clientfile, serverfile):
-        print('sendFile:',clientfile,serverfile)
+    def sendFile(self, clientfile):
+        print('sendFile:',clientfile)
         # 判断源文件是否存在
         if not os.path.exists(clientfile):
             print("源文件不存在")
@@ -19,8 +19,6 @@ class fileClient():
         self.file_data.set_action('upload')
         # 设置文件大小
         self.file_data.set_size(os.stat(clientfile).st_size)
-        # 文件上传到服务器路径
-        self.file_data.set_server_file_path(serverfile)
         # 源文件路径
         self.file_data.set_client_file_path(clientfile)
         # 将数据打包发
@@ -60,13 +58,13 @@ class fileClient():
             print(e)
             return "error:" + str(e)
 
-    def recvFile(self, clientfile, serverfile):
+    def recvFile(self,serverfile):
         '''接受文件
         clientfile：文件要下载到的文件夹
         serverfile：从服务器上下载的文件
         '''
         # 若本地file文件夹不存在则创建
-        if not os.path.exists(clientfile):
+        if not os.path.exists('file'):
             try:
                 os.mkdir('file')
             except Exception as e:
@@ -76,7 +74,7 @@ class fileClient():
         self.file_data.set_action('download')
         # self.file_data.set_client_file_path(clientfile)
         self.file_data.set_server_file_path(serverfile)
-        print('recvFile:',clientfile,serverfile)
+        print('recvFile:',serverfile)
         # 创建tcp socket
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
@@ -98,7 +96,7 @@ class fileClient():
                 '''
                 # 以收到的数据大小
                 self.recvd_size = 0
-                fileName = os.path.join(clientfile, (os.path.split(serverfile))[1])
+                fileName = os.path.join('file/', (os.path.split(serverfile))[1])
                 file = open(fileName, 'wb')
                 while not self.recvd_size == self.file_data.get_size():
                     if self.file_data.get_size() - self.recvd_size > 1024:

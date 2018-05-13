@@ -88,14 +88,12 @@ class FileWindow(QtWidgets.QWidget):
         self.file_path_name = self.file_path_name[7:-2]
         # 上传文件
         fileclient = fileUpDownload.fileClient((FILE_SERVER_IP, FILE_SERVER_PORT))
-        fileclient.sendFile(self.file_path_name, 'file')
+        fileclient.sendFile(self.file_path_name)
 
     def pressDownloadBtn(self):
         '''下载文件按钮槽函数，从服务器下载文件到本地file文件夹'''
         # 获取输入框中文件名
         self.file_name = self.down_lineEdit.text()
-        # 下载文件
-        file_path = 'file/' + self.file_name
         fileclient = fileUpDownload.fileClient((FILE_SERVER_IP, FILE_SERVER_PORT))
-        fileclient.recvFile('file', file_path)
+        fileclient.recvFile(self.file_name)
 

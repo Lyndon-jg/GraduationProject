@@ -30,7 +30,8 @@ class fileServer(socketserver.StreamRequestHandler):
             # 上传
             if self.file_data.get_action().startswith("upload"):
                 try:
-                    if not os.path.exists(self.file_data.get_server_file_path()):
+                    # 判断本地file文件夹是否存在，若不存在则创建
+                    if not os.path.exists('file'):
                         try:
                             os.mkdir('file')
                         except Exception as e:
@@ -45,7 +46,7 @@ class fileServer(socketserver.StreamRequestHandler):
                     # 分割客户端文件为路径（0） 和 文件名（1）：找到文件名[1]
                     fileName = (os.path.split(self.file_data.get_client_file_path()))[1]
                     #           将要存储的文件路径和文件名结合起来，并创建新的文件
-                    file = open(os.path.join(self.file_data.get_server_file_path(), fileName), 'wb')
+                    file = open(os.path.join('file/', fileName), 'wb')
                     # 以收到数据的大小   和  文件的大小
                     while not recvd_size == self.file_data.get_size():
                         if self.file_data.get_size() - recvd_size > 1024:
@@ -67,12 +68,13 @@ class fileServer(socketserver.StreamRequestHandler):
             # 下载
             elif self.file_data.get_action().startswith("download"):
                 try:
-                    if os.path.exists(self.file_data.get_server_file_path()):
+                    filePath = os.path.join('file/',self.file_data.get_server_file_path())
+                    if os.path.exists(filePath):
                         self.file_data.set_action('ok')
-                        self.file_data.set_size(os.stat(self.file_data.get_server_file_path()).st_size)
+                        self.file_data.set_size(os.stat(filePath).st_size)
                         ret = self.file_data.file_struct_pack()
                         self.request.send(ret)
-                        fo = open(self.file_data.get_server_file_path(), 'rb')
+                        fo = open(filePath, 'rb')
                         while True:
                             filedata = fo.read(1024)
                             if not filedata:
