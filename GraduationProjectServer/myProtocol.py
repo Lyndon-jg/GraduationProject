@@ -238,7 +238,6 @@ class FileStruct:
         self.rcv_data = None
 
         self.action = ''
-        # self.md5sum = ''
         self.client_file_path = ''
         self.server_file_path = ''
         self.size = 0
@@ -255,7 +254,6 @@ class FileStruct:
         #                                                                                                   package)
         self.action, self.client_file_path, self.server_file_path, self.size = struct.unpack(dataFormat, package)
         self.action = self.action.decode().strip('\x00')
-        # self.md5sum = self.md5sum.decode().strip('\x00')
         self.client_file_path = self.client_file_path.decode().strip('\x00')
         self.server_file_path = self.server_file_path.decode().strip('\x00')
 

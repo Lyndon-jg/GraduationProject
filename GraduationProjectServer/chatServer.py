@@ -57,6 +57,7 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
         elif len(result) == 0:
             print('未找到好友')
             return -1
+    # 查看当天聊天记录
     elif data.get_chat_status() == CHAT_STATUS_ONEDAY_MESSAGE:
         table_name = data.get_my_count()+'_chatRecord'
         sql = "SELECT time, first_count, second_count, message FROM %s WHERE (first_count='%s' and second_count='%s') or (first_count='%s' and second_count='%s')" % (
@@ -74,7 +75,6 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
                     udpSerSock.sendto(data.chat_struct_pack(), chat_client_addr)
                 else:
                     break
-        pass
     # 获得自己的好友列表
     elif data.get_chat_status() == CHAT_STATUS_LIST:
         print("CHAT_STATUS_LIST")
@@ -111,6 +111,7 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
         elif len(result) == 0:
             print('未找到好友')
             return -1
+    # 查看聊天记录
     elif data.get_chat_status() == CHAT_STATUS_CHAT_RECORE:
         print("CHAT_STATUS_CHAT_RECORE")
 

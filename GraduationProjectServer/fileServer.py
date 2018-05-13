@@ -4,55 +4,67 @@ import socketserver
 import threading
 import time
 from myProtocol import *
-dataFormat = '8s100s100sl'
+# 数据格式：
+# dataFormat = '8s100s100sl'
 file_dir = 'file'
-
+# https://www.cnblogs.com/renpingsheng/p/7260974.html
 # 初始化套接字
 ADDR = ("",FILE_SERVER_PORT_2)
 udpSerSock = socket(AF_INET,SOCK_DGRAM)
 udpSerSock.bind(ADDR)
 
+# StreamRequestHandler         TCP请求处理类的一个实现
 class fileServer(socketserver.StreamRequestHandler):
     def handle(self):
         self.file_data = FileStruct()
         print('connected from:', self.client_address)
         fileinfo_size = struct.calcsize(dataFormat)
+        # 接受fileinfo_size 大小的数据
         recv_data = self.request.recv(fileinfo_size)
+        # 接收到数据
         if recv_data:
+            # 将数据解析出来
             self.file_data.struct_unpack(recv_data)
             print("get action:" + self.file_data.get_action())
+            # 判断是要上传文件，还是下载文件
+            # 上传
             if self.file_data.get_action().startswith("upload"):
                 try:
-                    # 服务器端 文件夹/文件名 是否为文件夹
-                    if os.path.isdir(self.file_data.get_server_file_path()):
-                        # 分割pathName,[1]：找到文件名clientfilePath
-                        fileName = (os.path.split(self.file_data.get_client_file_path()))[1]
-                        # 将存储路径和文件名链接起来
-                        self.file_data.set_server_file_path(os.path.join(self.file_data.get_server_file_path(), fileName))
-                    # 将文件路径分为 文件夹和文件名
-                    filePath, fileName = os.path.split(self.file_data.get_server_file_path())
-                    # 判断文件夹是否存在
-                    if not os.path.exists(filePath):
-                        self.request.send(str.encode('dirNotExist'))
-                    else:
-                        self.request.send(str.encode('ok'))
-
-                        recvd_size = 0
-                        file = open(self.file_data.get_server_file_path(), 'wb')
-                        while not recvd_size == self.file_data.get_size():
-                            if self.file_data.get_size() - recvd_size > 1024:
-                                rdata = self.request.recv(1024)
-                                recvd_size += len(rdata)
-                            else:
-                                rdata = self.request.recv(self.file_data.get_size() - recvd_size)
-                                recvd_size = self.file_data.get_size()
-                            file.write(rdata)
-                        file.close()
-                        self.request.send(str.encode('ok'))
+                    if not os.path.exists(self.file_data.get_server_file_path()):
+                        try:
+                            os.mkdir('file')
+                        except Exception as e:
+                            print(e)
+                            self.request.send(str.encode('dirNotExist'))
+                            self.request.close()
+                            return 'file dir not exist'
+                    # else:
+                    self.request.send(str.encode('ok'))
+                    # 以收到数据的大小
+                    recvd_size = 0
+                    # 分割客户端文件为路径（0） 和 文件名（1）：找到文件名[1]
+                    fileName = (os.path.split(self.file_data.get_client_file_path()))[1]
+                    #           将要存储的文件路径和文件名结合起来，并创建新的文件
+                    file = open(os.path.join(self.file_data.get_server_file_path(), fileName), 'wb')
+                    # 以收到数据的大小   和  文件的大小
+                    while not recvd_size == self.file_data.get_size():
+                        if self.file_data.get_size() - recvd_size > 1024:
+                            rdata = self.request.recv(1024)
+                            recvd_size += len(rdata)
+                        else:
+                            rdata = self.request.recv(self.file_data.get_size() - recvd_size)
+                            recvd_size = self.file_data.get_size()
+                        # 将收到的数据写入文件
+                        file.write(rdata)
+                    # 关闭文件
+                    file.close()
+                    # 告诉客户端接收完毕
+                    self.request.send(str.encode('ok'))
                 except Exception as e:
                     print(e)
                 finally:
                     self.request.close()
+            # 下载
             elif self.file_data.get_action().startswith("download"):
                 try:
                     if os.path.exists(self.file_data.get_server_file_path()):
