@@ -18,6 +18,7 @@ class fileServer(socketserver.StreamRequestHandler):
     def handle(self):
         self.file_data = FileStruct()
         print('connected from:', self.client_address)
+        # 计算dataFormat大小
         fileinfo_size = struct.calcsize(dataFormat)
         # 接受fileinfo_size 大小的数据
         recv_data = self.request.recv(fileinfo_size)
@@ -28,7 +29,7 @@ class fileServer(socketserver.StreamRequestHandler):
             print("get action:" + self.file_data.get_action())
             # 判断是要上传文件，还是下载文件
             # 上传
-            if self.file_data.get_action().startswith("upload"):
+            if self.file_data.get_action() == "upload":
                 try:
                     # 判断本地file文件夹是否存在，若不存在则创建
                     if not os.path.exists('file'):
@@ -66,7 +67,7 @@ class fileServer(socketserver.StreamRequestHandler):
                 finally:
                     self.request.close()
             # 下载
-            elif self.file_data.get_action().startswith("download"):
+            elif self.file_data.get_action() == "download":
                 try:
                     filePath = os.path.join('file/',self.file_data.get_server_file_path())
                     if os.path.exists(filePath):
@@ -100,7 +101,6 @@ class fileServerth(threading.Thread):
     def run(self):
         print("fileServer is running...")
         fileserver.serve_forever()
-
 
 def main():
     while True:

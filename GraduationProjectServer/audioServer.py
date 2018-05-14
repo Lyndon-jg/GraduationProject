@@ -13,6 +13,7 @@ def audio_handler(data, audio_client_addr):
     db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
     connect_cursor = db_connect.cursor()
     # 判断语音消息的状态
+    # 拒绝语音请求
     if data.get_audio_status() == AUDIO_STATUS_REJECT:
         print("AUDIO_STATUS_REJECT")
         sql = "SELECT ip,audioPagePort FROM userTable where count = '%s'" % (data.get_friend_count())
@@ -28,6 +29,7 @@ def audio_handler(data, audio_client_addr):
             connect_cursor.close()
             db_connect.close()
             return -1
+    # 接受语音请求
     elif data.get_audio_status() == AUDIO_STATUS_ACCEPT:
         print("AUDIO_STATUS_ACCEPT")
         sql = "SELECT ip,audioPagePort FROM userTable where count = '%s'" % (data.get_friend_count())
@@ -44,11 +46,13 @@ def audio_handler(data, audio_client_addr):
             connect_cursor.close()
             db_connect.close()
             return -1
+    # 更新语音server端口
     elif data.get_audio_status() == AUDIO_STATUS_UPDATE_SERVER_PORT:
         print("AUDIO_STATUS_UPDATE_SERVER_PORT")
         sql = "UPDATE userTable SET audioServerPort = %d WHERE count = '%s'" % (data.get_audio_server_port(), data.get_my_count())
         connect_cursor.execute(sql)
         db_connect.commit()
+    # 更新语音client端口
     elif data.get_audio_status() == AUDIO_STATUS_UPDATE_CLIENT_PORT:
         print("AUDIO_STATUS_UPDATE_CLIENT_PORT")                                # udp port
         sql = "UPDATE userTable SET audioClientPort = %d WHERE count = '%s'" % (audio_client_addr[1], data.get_my_count())
@@ -69,6 +73,7 @@ def audio_handler(data, audio_client_addr):
             connect_cursor.close()
             db_connect.close()
             return -1
+    # 更新audioPagePort
     elif data.get_audio_status() == AUDIO_STATUS_UPDATE:
         print("AUDIO_STATUS_UPDATE")
         sql = "UPDATE userTable SET audioPagePort = %d WHERE count = '%s'" % (audio_client_addr[1], data.get_my_count())

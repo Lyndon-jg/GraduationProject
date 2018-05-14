@@ -13,8 +13,7 @@ class fileClient():
         print('sendFile:',clientfile)
         # 判断源文件是否存在
         if not os.path.exists(clientfile):
-            print("源文件不存在")
-            return "No such file or directory"
+            return "fileNotExist"
         # 设置文件传输行为：上传
         self.file_data.set_action('upload')
         # 设置文件大小
@@ -33,8 +32,7 @@ class fileClient():
             recv = s.recv(1024)
             # 不可以传输文件
             if recv.decode() == 'dirNotExist':
-                print("目标文件/文件夹不存在")
-                return "No such file or directory"
+                return "upLoadFaile"
             # 可以传输文件
             elif recv.decode() == 'ok':
                 fo = open(clientfile, 'rb')
@@ -51,9 +49,8 @@ class fileClient():
                 recv = s.recv(1024)
 
                 if recv.decode() == 'ok':
-                    print("文件传输成功")
                     s.close()
-                    return 0
+                    return 'upLoadSuccess'
         except Exception as e:
             print(e)
             return "error:" + str(e)
@@ -89,11 +86,6 @@ class fileClient():
             self.file_data.struct_unpack(recv_data)
             # 判断是否可以下载文件
             if self.file_data.get_action() == "ok":
-                '''
-                if os.path.isdir(clientfile):
-                    fileName = (os.path.split(serverfile))[1]
-                    clientfile = os.path.join(clientfile, fileName)
-                '''
                 # 以收到的数据大小
                 self.recvd_size = 0
                 fileName = os.path.join('file/', (os.path.split(serverfile))[1])
@@ -107,10 +99,9 @@ class fileClient():
                         self.recvd_size = self.file_data.get_size()
                     file.write(rdata)
                 file.close()
-                print("文件传输成功")
+                return 'downLoadSuccess'
             elif self.file_data.get_action() == "nofile":
-                print('远程源文件/文件夹不存在')
-                return "No such file or directory"
+                return "downLoadFaile"
         except Exception as e:
             print(e)
             return "error:" + str(e)

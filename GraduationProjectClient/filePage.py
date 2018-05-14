@@ -88,12 +88,21 @@ class FileWindow(QtWidgets.QWidget):
         self.file_path_name = self.file_path_name[7:-2]
         # 上传文件
         fileclient = fileUpDownload.fileClient((FILE_SERVER_IP, FILE_SERVER_PORT))
-        fileclient.sendFile(self.file_path_name)
+        ret = fileclient.sendFile(self.file_path_name)
+        if ret == 'fileNotExist':
+            QMessageBox.warning(self, ("Warning"), ("文件不存在"), QMessageBox.Yes)
+        elif ret == 'upLoadFaile':
+            QMessageBox.warning(self, ("Warning"), ("上传失败"), QMessageBox.Yes)
+        elif ret == 'upLoadSuccess':
+            QMessageBox.warning(self, ("Warning"), ("上传成功"), QMessageBox.Yes)
 
     def pressDownloadBtn(self):
         '''下载文件按钮槽函数，从服务器下载文件到本地file文件夹'''
         # 获取输入框中文件名
         self.file_name = self.down_lineEdit.text()
         fileclient = fileUpDownload.fileClient((FILE_SERVER_IP, FILE_SERVER_PORT))
-        fileclient.recvFile(self.file_name)
-
+        ret = fileclient.recvFile(self.file_name)
+        if ret == 'downLoadSuccess':
+            QMessageBox.warning(self, ("Warning"), ("下载成功"), QMessageBox.Yes)
+        elif ret == 'downLoadFaile':
+            QMessageBox.warning(self, ("Warning"), ("下载失败"), QMessageBox.Yes)
