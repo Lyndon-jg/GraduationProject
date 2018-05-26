@@ -39,7 +39,6 @@ def audio_handler(data, audio_client_addr):
         if len(result) == 1:
             for row in result:
                 destination_addr = (row[0], int(row[1]))
-
             data.change_name()
             udpSerSock.sendto(data.audio_struct_pack(), destination_addr)
         elif len(result) == 0:
@@ -73,13 +72,12 @@ def audio_handler(data, audio_client_addr):
             connect_cursor.close()
             db_connect.close()
             return -1
-    # 更新audioPagePort
+    # 更新语音界面Port
     elif data.get_audio_status() == AUDIO_STATUS_UPDATE:
         print("AUDIO_STATUS_UPDATE")
         sql = "UPDATE userTable SET audioPagePort = %d WHERE count = '%s'" % (audio_client_addr[1], data.get_my_count())
         connect_cursor.execute(sql)
         db_connect.commit()
-
 
     connect_cursor.close()
     db_connect.close()

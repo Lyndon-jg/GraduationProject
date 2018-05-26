@@ -49,9 +49,9 @@ class FileWindow(QtWidgets.QWidget):
 
     def initTableWidget(self):
         '''初始化对象时 设置表格参数'''
-        header = ["fileName", "fileSize"]
+        header = ["fileName"]
         # 设置两列
-        self.tableWidget.setColumnCount(2)
+        self.tableWidget.setColumnCount(1)
         # 设置列名
         self.tableWidget.setHorizontalHeaderLabels(header)
         # 向服务器发送数据（要求服务器传回所有文件名）

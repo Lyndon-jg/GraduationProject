@@ -11,7 +11,9 @@ import filePage, chatRecordPage
 
 
 class ChatWindow(QtWidgets.QWidget):
+    # 接收到语音请求信号
     receive_audio_signal = pyqtSignal(str, str)
+    # 点击语音按钮信号
     click_audio_btn_signal = pyqtSignal(str, str, str)
 
     def __init__(self, my_count):
@@ -28,6 +30,8 @@ class ChatWindow(QtWidgets.QWidget):
         self.udp_client_socket = QUdpSocket()
         # 收发数据对象
         self.data = ChatStruct()
+        # 用户列表
+        self.user_list = []
 
         # 聊天记录界面空对象
         self.chat_record_page = None
@@ -58,15 +62,22 @@ class ChatWindow(QtWidgets.QWidget):
         # 收到服务器消息链接到 receiveMessage槽函数
         self.udp_client_socket.readyRead.connect(self.receiveMessage)
 
-    #-------------------------------------------语音
         # 语音界面
         self.audio_window = audioPage.AudioWindow()
         # 语音消息按钮
         self.audio_window = None
         self.audio_Btn.clicked.connect(self.pressAudioBtn)
-    # -------------------------------------------语音
+
+        # 更新ip 和 端口
         self.update_ip_port()
-        self.give_my_friends()
+        # 获取好友列表
+        self.updateUserList()
+
+    def closeEvent(self, QCloseEvent):
+        self.data.set_my_count(self.myname_label.text())
+        self.data.set_chat_status(CHAT_STATUS_EXIT)
+        self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP),
+                                             CHAT_SERVER_PORT)
 
 
     def timeout(self):
@@ -77,27 +88,32 @@ class ChatWindow(QtWidgets.QWidget):
         time_str = time.toString("yyyy-MM-dd hh:mm:ss")
         # 更新时间
         self.lcdNumber.display(time_str)
+        # 更新列表中用户的状态
+        self.updateUserList()
 
     def pressAudioBtn(self):
-        print("press_audio_btn")
         '''语音按钮,自己显示一个语音界面，并通知对方有语音连接消息到达'''
-        # 语音界面
-        self.audio_window = audioPage.AudioWindow()
-        # 语音消息按钮
-        self.receive_audio_signal.connect(self.audio_window.setFirstText)
-        self.click_audio_btn_signal.connect(self.audio_window.setSecondText)
+        print("press_audio_btn")
         # 判断是否已经选择好友
         if self.friendname_label.text() == "":
             QMessageBox.warning(self, ("Waring"), ("请选择相应的好友"), QMessageBox.Yes)
             return
-        # 将消息发送给服务器
+        # 语音界面
+        self.audio_window = audioPage.AudioWindow()
+        # 将两个信号 绑定槽函数
+        self.receive_audio_signal.connect(self.audio_window.recvAudioText)
+        self.click_audio_btn_signal.connect(self.audio_window.clickAudioText)
+        # 将语音请求消息发送给服务器
         self.data.set_my_count(self.myname_label.text())
         self.data.set_friend_count(self.friendname_label.text())
         self.data.set_chat_status(CHAT_STATUS_AUDIO_REQUEST)
         self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP),
                                              CHAT_SERVER_PORT)
+        # 发送点击语音按钮信号
         self.click_audio_btn_signal.emit("等待对方接听...", self.myname_label.text(), self.friendname_label.text())
+        # 显示语音界面
         self.audio_window.show()
+        # 更新语音界面端口
         self.audio_window.updateAudioPort()
         self.audio_window.exec_()
 
@@ -182,23 +198,33 @@ class ChatWindow(QtWidgets.QWidget):
             message = self.data.get_message().split("+")
             # print(type(message))
             # print(message)
-            item = QTreeWidgetItem(self.friends_treeWidget)
-            item.setText(0, message[0])
-            if message[1] == 0:
-                item.setText(1, "离线")
+            if message[0] not in self.user_list:
+                item = QTreeWidgetItem(self.friends_treeWidget)
+                item.setText(0, message[0])
+                if message[1] == '0':
+                    item.setText(1, "离线")
+                if message[1] == '1':
+                    item.setText(1, "在线")
+                self.user_list.append(message[0])
             else:
-                item.setText(1, "在线")
-            # print("chat_client：更新好友列表完毕")
+                items = self.friends_treeWidget.findItems(message[0], Qt.MatchRecursive, 0)
+                if message[1] == '0':
+                    items[0].setText(1, "离线")
+                if message[1] == '1':
+                    items[0].setText(1, "在线")
         # 客户端发来语音消息
         elif self.data.get_chat_status() == CHAT_STATUS_AUDIO_REQUEST:
             print("receive_message:CHAT_STATUS_VOICE_REQUEST")
-            # 语音界面
+            # 创建语音界面对象
             self.audio_window = audioPage.AudioWindow()
-            self.receive_audio_signal.connect(self.audio_window.setFirstText)
-            self.click_audio_btn_signal.connect(self.audio_window.setSecondText)
-
+            # 两个信号绑定槽函数
+            self.receive_audio_signal.connect(self.audio_window.recvAudioText)
+            self.click_audio_btn_signal.connect(self.audio_window.clickAudioText)
+            # 发送接收到语音请求信号
             self.receive_audio_signal.emit(self.data.get_my_count(),self.data.get_friend_count())
+            # 显示语音界面
             self.audio_window.show()
+            # 更新语音界面端口
             self.audio_window.updateAudioPort()
             self.audio_window.exec_()
 
@@ -223,13 +249,18 @@ class ChatWindow(QtWidgets.QWidget):
 
 
 
-    def give_my_friends(self):
+    def updateUserList(self):
         '''给系统要好友账户显示出来'''
         self.data.set_my_count(self.myname_label.text())
-        self.data.set_friend_count("")
-        self.data.set_message("")
         self.data.set_chat_status(CHAT_STATUS_LIST)
         self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP), CHAT_SERVER_PORT)
+
+    def checkUserStatus(self):
+        '''检查用户的状态：在线，离线'''
+        self.data.set_my_count(self.myname_label.text())
+        self.data.set_chat_status(CHAT_STATUS_CHECK_STATUS)
+        self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP),
+                                             CHAT_SERVER_PORT)
 
     def update_ip_port(self):
         '''更新我的端口和ip'''

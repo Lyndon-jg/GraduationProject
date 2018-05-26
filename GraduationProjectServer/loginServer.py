@@ -30,20 +30,15 @@ def login_handler(data, db_connect, connect_cursor):
     elif data.get_status() == 1:
         print("count = '%s' AND passwd = '%s'"%(data.get_count(), data.get_passwd()))
         # 查找账户是否已经存在
-        sql = "SELECT count,passwd FROM managerTable WHERE count = '%s' AND passwd = '%s'" % (
+        sql = "SELECT count,passwd FROM manager WHERE count = '%s' AND passwd = '%s'" % (
         data.get_count(), data.get_passwd())
         connect_cursor.execute(sql)
         result = connect_cursor.fetchall()
-
         if len(result) == 0:
             print("帐号或密码不正确")
             return LOGIN_STATUS_FAIL
         if len(result) == 1:
             print("帐号和密码正确,可以登录")
-            sql = "UPDATE managerTable SET status = 1 WHERE count = '%s' AND passwd = '%s'" % (
-            data.get_count(), data.get_passwd())
-            connect_cursor.execute(sql)
-            db_connect.commit()
             return LOGIN_STATUS_OK
 
     return -1

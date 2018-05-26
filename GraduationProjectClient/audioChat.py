@@ -6,58 +6,80 @@ import time
 import random
 from PyQt5.QtCore import QThread
 from myProtocol import *
+# https://blog.csdn.net/lu_embedded/article/details/50784355
 
+# 指定每个缓冲区的帧数
+# 块
 CHUNK = 1024
+# 采样大小和格式
+# paInt16        = pa.paInt16        #: 16 bit int
+# 16位整型数，两个字节
 FORMAT = pyaudio.paInt16
-CHANNELS = 2
+# 通道数
+CHANNELS = 1
+# 采样频率：每秒采集数据的次数
 RATE = 44100
+# 每次记录时间 即间隔0.5s发送一次
 RECORD_SECONDS = 0.5
 
 class AudioServer(QThread):
 
     def __init__(self) :
         QThread.__init__(self)
+        # 关闭线程标志
         self.closeThreadFlag = 0
-
+        # 自己的用户名和好友的用户名
         self.my_count = ''
         self.friend_count = ''
-
+        # 端口号和地址
         self.port = 0
         self.ADDR = ()
-
+        # 语音数据对象
         self.audio_data = AudioStruct()
-
+        # server  tcp  socket
         self.audio_server_tcp_socket = socket(AF_INET, SOCK_STREAM)
+        # server  udp  socket
         self.audio_server_udp_socket = socket(AF_INET, SOCK_DGRAM)
-
+        # 定义PyAudio对象
         self.p = pyaudio.PyAudio()
+        # 数据流
         self.stream = None
 
     def __del__(self):
+        # 关闭socket
         self.audio_server_tcp_socket.close()
+        self.audio_server_udp_socket.close()
+        # 如果stream不为空，停止并关闭
         if self.stream is not None:
             self.stream.stop_stream()
             self.stream.close()
+        # 中断PyAudio对象
         self.p.terminate()
 
+    # 关闭audio server
     def closeAudioServer(self):
+        # 设置关闭线程标志为1
         self.closeThreadFlag = 1
-
+    # 设置账户名函数
     def setCount(self, my_count, friend_count):
         self.my_count = my_count
         self.friend_count = friend_count
 
+    # 启动线程
     def run(self):
         print("AUDIO server starts...")
         while True:
+            # 随机生成一个端口并绑定，直到成功
             try:
-                # 设置tcp绑定 监听
+                # 随机生成port
                 self.port = random.randint(1025,65535)
                 self.ADDR = ('', self.port)
+                # 绑定
                 self.audio_server_tcp_socket.bind(self.ADDR)
+                # 监听
                 self.audio_server_tcp_socket.listen(1)
                 print('audio server port:%d'%self.port)
-                #--------更新端口
+                #--------告知服务器更新tcp socket端口---------
                 self.audio_data.set_my_count(self.my_count)
                 self.audio_data.set_audio_server_port(self.port)
                 self.audio_data.set_audio_status(AUDIO_STATUS_UPDATE_SERVER_PORT)
@@ -66,6 +88,7 @@ class AudioServer(QThread):
             except:
                 print('bind error, trying...')
                 time.sleep(1)
+        # 接受客户端的连接
         connect, addr = self.audio_server_tcp_socket.accept()
         print("remote AUDIO client success connected...")
         data = "".encode("utf-8")
@@ -168,4 +191,3 @@ class AudioClient(QThread):
                 self.audio_server_tcp_socket.sendall(struct.pack("L", len(senddata)) + senddata)
             except:
                 break
-
