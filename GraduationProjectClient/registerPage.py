@@ -17,13 +17,12 @@ class RgsWindow(QtWidgets.QWidget):
         # 关闭页面 就销毁对象
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        #创建udp客户端socket
+        #创建udp socket
         self.udp_client_socket = QUdpSocket()
         #收发数据对象
         self.data = RegisterStruct()
 
-
-        # 注册界面空对象
+        #  登录界面空对象
         self.login_window = None
 
         # 确定按钮链接到 sure_btn_press槽函数
@@ -55,7 +54,7 @@ class RgsWindow(QtWidgets.QWidget):
         self.close()
         # 调出登录界面
         self.login_window.show()
-        self.login_window._exec()
+#        self.login_window._exec()
 
     def closeEvent(self, QCloseEvent):
         '''点击x号,关闭自己界面，显示登录界面'''
@@ -65,7 +64,7 @@ class RgsWindow(QtWidgets.QWidget):
         self.close()
         # 调出登录界面
         self.login_window.show()
-        self.login_window._exec()
+#        self.login_window._exec()
 
 
     def receiveMessage(self):

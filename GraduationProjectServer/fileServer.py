@@ -13,14 +13,14 @@ ADDR = ("",FILE_SERVER_PORT_2)
 udpSerSock = socket(AF_INET,SOCK_DGRAM)
 udpSerSock.bind(ADDR)
 
-# StreamRequestHandler         TCP请求处理类的一个实现
+# StreamRequestHandler         TCP请求处理类
 class fileServer(socketserver.StreamRequestHandler):
     def handle(self):
         self.file_data = FileStruct()
         print('connected from:', self.client_address)
         # 计算dataFormat大小
         fileinfo_size = struct.calcsize(dataFormat)
-        # 接受fileinfo_size 大小的数据
+        # 接收数据
         recv_data = self.request.recv(fileinfo_size)
         # 接收到数据
         if recv_data:
@@ -40,15 +40,14 @@ class fileServer(socketserver.StreamRequestHandler):
                             self.request.send(str.encode('dirNotExist'))
                             self.request.close()
                             return 'file dir not exist'
-                    # else:
                     self.request.send(str.encode('ok'))
-                    # 以收到数据的大小
+                    #  已收到数据的大小
                     recvd_size = 0
-                    # 分割客户端文件为路径（0） 和 文件名（1）：找到文件名[1]
+                    # 分割文件为路径（0） 和 文件名（1）：找到文件名[1]
                     fileName = (os.path.split(self.file_data.get_client_file_path()))[1]
-                    #           将要存储的文件路径和文件名结合起来，并创建新的文件
+                    #  在file文件夹下创建新的文件
                     file = open(os.path.join('file/', fileName), 'wb')
-                    # 以收到数据的大小   和  文件的大小
+                    # 已收到数据的大小   和  文件的大小
                     while not recvd_size == self.file_data.get_size():
                         if self.file_data.get_size() - recvd_size > 1024:
                             rdata = self.request.recv(1024)
@@ -70,19 +69,25 @@ class fileServer(socketserver.StreamRequestHandler):
             elif self.file_data.get_action() == "download":
                 try:
                     filePath = os.path.join('file/',self.file_data.get_server_file_path())
+                    # 如果文件存在
                     if os.path.exists(filePath):
+                        # 告知客户端可以下载
                         self.file_data.set_action('ok')
                         self.file_data.set_size(os.stat(filePath).st_size)
                         ret = self.file_data.file_struct_pack()
                         self.request.send(ret)
+                        # 打开文件
                         fo = open(filePath, 'rb')
                         while True:
                             filedata = fo.read(1024)
                             if not filedata:
                                 break
                             self.request.send(filedata)
+                        # 关闭文件
                         fo.close()
+                    # 如果文件不存在
                     else:
+                        # 告知客户端文件不存在
                         self.file_data.set_action('nofile')
                         ret = self.file_data.file_struct_pack()
                         self.request.send(ret)
@@ -92,11 +97,9 @@ class fileServer(socketserver.StreamRequestHandler):
                     self.request.close()
 
 
-class fileServerth(threading.Thread):
+class fileServerthread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.create_time = time.time()
-        self.local = threading.local()
 
     def run(self):
         print("fileServer is running...")
@@ -110,17 +113,17 @@ def main():
                 # print('=================================')
                 # print(root)  # 当前目录路径
                 # print(dirs)  # 当前路径下所有子目录
-                # print(files)  # 当前路径下所有非目录子文件
+                # print(files)  # 当前路径下所有非目录子文件(列表)
                 # print('=================================')
                 udpSerSock.sendto(str(files).encode('utf-8'), file_client_addr)
                 break
         else:
-            print('file:not update')
+            print('file:update faile')
             break
 
 
 if __name__ == '__main__':
     fileserver = socketserver.ThreadingTCPServer((FILE_SERVER_IP,FILE_SERVER_PORT), fileServer)
-    fileserverth = fileServerth()
-    fileserverth.start()
+    fileserverthread = fileServerthread()
+    fileserverthread.start()
     main()

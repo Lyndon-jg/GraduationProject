@@ -75,9 +75,21 @@ class AudioWindow(QWidget):
         # 若线程打开，关闭线程
         self.audio_client.closeAudioClient()
         self.audio_server.closeAudioServer()
+        # 发消息给服务器我已经断开语音连接
+        self.audio_data.set_my_count(self.my_count)
+        self.audio_data.set_friend_count(self.friend_count)
+        self.audio_data.set_audio_status(AUDIO_STATU_CLOSE)
+        self.audio_socket.writeDatagram(self.audio_data.audio_struct_pack(), QHostAddress(AUDIO_SERVER_IP),AUDIO_SERVER_PORT)
         # 关闭本界面
         self.close()
-        '''gao su dui fang yi gua duan 还没有实现'''
+    # 取消请求
+    def cancleRequest(self):
+        '''请求方如果取消语音请求则本地只能显示关闭按钮'''
+        self.label.setText('对方以关闭语音通信连接')
+        # 隐藏接受 拒绝按钮  显示 关闭按钮
+        self.recvBtn.hide()
+        self.rejectBtn.hide()
+        self.closeBtn.show()
 
     # 接收服务器发来的消息
     def receiveMessage(self):
@@ -93,8 +105,11 @@ class AudioWindow(QWidget):
             # 发送语音线程开始
             self.audio_client.start()
         elif self.audio_data.get_audio_status() == AUDIO_STATUS_REJECT:
-            print('recv reject')
+            print('recv reject111')
             self.label.setText('对方拒绝了你的请求')
+        elif self.audio_data.get_audio_status() == AUDIO_STATU_CLOSE:
+            print('recv close')
+            self.cancleRequest()
 
     # 有人发来请求，槽函数
     def recvAudioText(self,my_count, friend_count):

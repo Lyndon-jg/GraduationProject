@@ -18,18 +18,28 @@
       <file leaf-file-name="loginServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/loginServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="38">
-              <caret line="2" column="15" lean-forward="false" selection-start-line="2" selection-start-column="15" selection-end-line="2" selection-end-column="15" />
+            <state relative-caret-position="76">
+              <caret line="12" column="9" lean-forward="false" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chatServer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="registerServer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/registerServer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="101">
+              <caret line="24" column="20" lean-forward="false" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="chatServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/chatServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="36" column="12" lean-forward="true" selection-start-line="36" selection-start-column="12" selection-end-line="36" selection-end-column="12" />
+            <state relative-caret-position="228">
+              <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -37,22 +47,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="myProtocol.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/myProtocol.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="219">
-              <caret line="135" column="24" lean-forward="false" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="audioServer.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="audioServer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/audioServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="14" column="15" lean-forward="false" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
-              <folding />
+            <state relative-caret-position="-304">
+              <caret line="5" column="29" lean-forward="true" selection-start-line="5" selection-start-column="29" selection-end-line="5" selection-end-column="29" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -60,8 +62,18 @@
       <file leaf-file-name="fileServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fileServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="12" column="39" lean-forward="true" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
+            <state relative-caret-position="114">
+              <caret line="11" column="30" lean-forward="true" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="myProtocol.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/myProtocol.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="937">
+              <caret line="306" column="21" lean-forward="false" selection-start-line="306" selection-start-column="21" selection-end-line="306" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -94,20 +106,20 @@
         <option value="$PROJECT_DIR$/rgs_server.py" />
         <option value="$PROJECT_DIR$/chat_server.py" />
         <option value="$PROJECT_DIR$/new_protocol.py" />
-        <option value="$PROJECT_DIR$/registerServer.py" />
-        <option value="$PROJECT_DIR$/fileServer.py" />
         <option value="$PROJECT_DIR$/loginServer.py" />
-        <option value="$PROJECT_DIR$/audioServer.py" />
-        <option value="$PROJECT_DIR$/myProtocol.py" />
+        <option value="$PROJECT_DIR$/registerServer.py" />
         <option value="$PROJECT_DIR$/chatServer.py" />
+        <option value="$PROJECT_DIR$/fileServer.py" />
+        <option value="$PROJECT_DIR$/myProtocol.py" />
+        <option value="$PROJECT_DIR$/audioServer.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="295" />
-    <option name="y" value="74" />
-    <option name="width" value="942" />
-    <option name="height" value="611" />
+    <option name="x" value="231" />
+    <option name="y" value="299" />
+    <option name="width" value="1047" />
+    <option name="height" value="634" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -143,6 +155,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -158,7 +171,6 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -166,7 +178,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../GraduationProjectClient" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///home/lyndon-jg/PycharmProjects/GraduationProjectServer/audioServer.py" />
   </component>
-  <component name="RunManager" selected="Python.chat">
+  <component name="RunManager" selected="Python.audioServer">
     <configuration default="false" name="rgs_server" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -395,11 +407,11 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.chat" />
-        <item index="1" class="java.lang.String" itemvalue="Python.login_server" />
-        <item index="2" class="java.lang.String" itemvalue="Python.fileServer" />
-        <item index="3" class="java.lang.String" itemvalue="Python.audioServer" />
-        <item index="4" class="java.lang.String" itemvalue="Python.rgs_server" />
+        <item index="0" class="java.lang.String" itemvalue="Python.audioServer" />
+        <item index="1" class="java.lang.String" itemvalue="Python.fileServer" />
+        <item index="2" class="java.lang.String" itemvalue="Python.chat" />
+        <item index="3" class="java.lang.String" itemvalue="Python.rgs_server" />
+        <item index="4" class="java.lang.String" itemvalue="Python.login_server" />
       </list>
     </recent_temporary>
   </component>
@@ -420,15 +432,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="295" y="74" width="942" height="611" extended-state="0" />
+    <frame x="231" y="299" width="1047" height="634" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1762208" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1661891" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.4861996" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22912966" sideWeight="0.50716335" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.51380044" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22912966" sideWeight="0.49283668" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -452,13 +464,11 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/protocol.py" />
     <entry file="file://$PROJECT_DIR$/registerServer.py" />
     <entry file="file://$PROJECT_DIR$/loginServer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1311">
           <caret line="80" column="31" lean-forward="false" selection-start-line="80" selection-start-column="31" selection-end-line="80" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -470,7 +480,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1311">
           <caret line="80" column="31" lean-forward="false" selection-start-line="80" selection-start-column="31" selection-end-line="80" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -481,7 +490,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1311">
           <caret line="80" column="31" lean-forward="false" selection-start-line="80" selection-start-column="31" selection-end-line="80" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -492,7 +500,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1311">
           <caret line="80" column="31" lean-forward="false" selection-start-line="80" selection-start-column="31" selection-end-line="80" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -503,19 +510,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="28" column="25" lean-forward="false" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.py" />
-    <entry file="file://$PROJECT_DIR$/chatServer.py" />
-    <entry file="file://$PROJECT_DIR$/protocol.py" />
-    <entry file="file://$PROJECT_DIR$/registerServer.py" />
-    <entry file="file://$PROJECT_DIR$/loginServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="28" column="25" lean-forward="false" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -527,7 +521,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="28" column="25" lean-forward="false" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -539,7 +532,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="28" column="25" lean-forward="false" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py" />
+    <entry file="file://$PROJECT_DIR$/chatServer.py" />
+    <entry file="file://$PROJECT_DIR$/protocol.py" />
+    <entry file="file://$PROJECT_DIR$/registerServer.py" />
+    <entry file="file://$PROJECT_DIR$/loginServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="28" column="25" lean-forward="false" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
         </state>
       </provider>
     </entry>
@@ -569,63 +572,73 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/lib/python3.5/socketserver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="676" column="13" lean-forward="false" selection-start-line="676" selection-start-column="13" selection-end-line="676" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python3.5/dist-packages/pymysql/cursors.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="164" column="0" lean-forward="false" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
+        <state relative-caret-position="345">
+          <caret line="302" column="16" lean-forward="true" selection-start-line="302" selection-start-column="16" selection-end-line="302" selection-end-column="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/registerServer.py">
+    <entry file="file:///usr/local/lib/python3.5/dist-packages/pymysql/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="18" column="38" lean-forward="false" selection-start-line="18" selection-start-column="38" selection-end-line="18" selection-end-column="38" />
+        <state relative-caret-position="148">
+          <caret line="88" column="17" lean-forward="false" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/audioServer.py">
+    <entry file="file:///usr/lib/python3.5/socketserver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="14" column="15" lean-forward="false" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fileServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="12" column="39" lean-forward="true" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
-          <folding />
+        <state relative-caret-position="346">
+          <caret line="224" column="42" lean-forward="true" selection-start-line="224" selection-start-column="42" selection-end-line="224" selection-end-column="42" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/loginServer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="15" lean-forward="false" selection-start-line="2" selection-start-column="15" selection-end-line="2" selection-end-column="15" />
+        <state relative-caret-position="76">
+          <caret line="12" column="9" lean-forward="false" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/myProtocol.py">
+    <entry file="file://$PROJECT_DIR$/registerServer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="135" column="24" lean-forward="false" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="24" />
+        <state relative-caret-position="101">
+          <caret line="24" column="20" lean-forward="false" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/chatServer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="36" column="12" lean-forward="true" selection-start-line="36" selection-start-column="12" selection-end-line="36" selection-end-column="12" />
+        <state relative-caret-position="228">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fileServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="11" column="30" lean-forward="true" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/myProtocol.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="937">
+          <caret line="306" column="21" lean-forward="false" selection-start-line="306" selection-start-column="21" selection-end-line="306" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/audioServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-304">
+          <caret line="5" column="29" lean-forward="true" selection-start-line="5" selection-start-column="29" selection-end-line="5" selection-end-column="29" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>

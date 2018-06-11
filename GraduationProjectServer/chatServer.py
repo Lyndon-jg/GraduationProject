@@ -35,15 +35,7 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
     '''消息处理函数,并返回一个值'''
     # 判断聊天消息的状态
     # 好友聊天消息
-    if data.get_chat_status() == CHAT_STATUS_CHECK_STATUS:
-        print("CHAT_STATUS_CHECK_STATUS")
-        # 查找userTable 将所有用户名称和登录状态发给登录用户
-        sql = "SELECT count,status FROM userTable"
-        connect_cursor.execute(sql)
-        result = connect_cursor.fetchall()
-        for row in result:
-            udpSerSock.sendto(send_count_to_user(data, row), chat_client_addr)
-    elif data.get_chat_status() == CHAT_STATUS_MSG:
+    if data.get_chat_status() == CHAT_STATUS_MSG:
         print("CHAT_STATUS_MSG")
         # 查找好友的ip 和 port
         sql = "SELECT ip,chatPagePort FROM userTable where count = '%s'"%(data.get_friend_count())
@@ -75,7 +67,7 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
         result = connect_cursor.fetchall()
         if len(result) != 0:
             for row in result:
-                # print(row[0][0:10], data.get_time()[0:10])
+                # print(row[0][0:10], data.get_time()[0:10]) 匹配日期
                 if row[0][0:10] == data.get_time()[0:10]:
                     data.set_time(row[0])
                     data.set_my_count(row[1])
@@ -105,7 +97,7 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
         # print(sql)
         connect_cursor.execute(sql)
         db_connect.commit()
-    # 发送语音请求消息
+    # 语音请求消息
     elif data.get_chat_status() == CHAT_STATUS_AUDIO_REQUEST:
         print("VOICE_STATUS_REQUEST")
         sql = "SELECT ip,chatPagePort FROM userTable where count = '%s'" % (data.get_friend_count())
@@ -130,11 +122,12 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
             for row in result:
                 chat_record_addr = (row[0], int(row[1]))
             table_name = data.get_my_count()+'_chatRecord'
-            # try:
+            # 查找聊天记录
             sql = "SELECT time, first_count, second_count, message FROM %s WHERE (first_count='%s' and second_count='%s') or (first_count='%s' and second_count='%s')" % (table_name, data.get_my_count(), data.get_friend_count(),data.get_friend_count(),data.get_my_count())
             connect_cursor.execute(sql)
             result = connect_cursor.fetchall()
             if len(result) != 0:
+                # 将聊天记录发送到客户端
                 for row in result:
                     data.set_time(row[0])
                     data.set_my_count(row[1])
@@ -144,6 +137,7 @@ def chat_handler(data, chat_client_addr, db_connect, connect_cursor):
         elif len(result) == 0:
             print('未找到好友')
             return -1
+    # 退出，更新在线状态为0
     elif data.get_chat_status() == CHAT_STATUS_EXIT:
         sql = "UPDATE userTable SET status = 0 WHERE count = '%s'" % (data.get_my_count())
         connect_cursor.execute(sql)

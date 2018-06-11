@@ -224,7 +224,9 @@ class ChatStruct:
 # ----------------------------文件
 
 FILE_SERVER_IP = DEFAULT_SERVER_IP
+# 传输文件
 FILE_SERVER_PORT = 19812
+# 定时返回文件名
 FILE_SERVER_PORT_2 = 19813
 
 FILE_STATUS_UPLOAD = 1
@@ -239,24 +241,18 @@ class FileStruct:
         self.rcv_data = None
 
         self.action = ''
-        # self.md5sum = ''
         self.client_file_path = ''
         self.server_file_path = ''
         self.size = 0
 
     def file_struct_pack(self):
-        # ret = struct.pack(dataFormat, self.action.encode(), self.md5sum.encode(), self.client_file_path.encode(),
-        # self.server_file_path.encode(), self.size)
         ret = struct.pack(dataFormat, self.action.encode(), self.client_file_path.encode(),
                           self.server_file_path.encode(), self.size)
         return ret
 
     def struct_unpack(self, package):
-        # self.action, self.md5sum, self.client_file_path, self.server_file_path, self.size = struct.unpack(dataFormat,
-        #                                                                                                   package)
         self.action, self.client_file_path, self.server_file_path, self.size = struct.unpack(dataFormat, package)
         self.action = self.action.decode().strip('\x00')
-        # self.md5sum = self.md5sum.decode().strip('\x00')
         self.client_file_path = self.client_file_path.decode().strip('\x00')
         self.server_file_path = self.server_file_path.decode().strip('\x00')
 
@@ -294,12 +290,16 @@ class FileStruct:
 # --------------------------------------语音
 AUDIO_SERVER_IP = DEFAULT_SERVER_IP
 AUDIO_SERVER_PORT = 55555
-
+# 更新端口号
 AUDIO_STATUS_UPDATE_CLIENT_PORT = 1
 AUDIO_STATUS_UPDATE_SERVER_PORT = 2
+
 AUDIO_STATUS_UPDATE = 3
+# 接受 拒绝语音通信
 AUDIO_STATUS_REJECT = 4
 AUDIO_STATUS_ACCEPT = 5
+# 关闭语音通信
+AUDIO_STATU_CLOSE = 6
 
 
 class AudioStruct:

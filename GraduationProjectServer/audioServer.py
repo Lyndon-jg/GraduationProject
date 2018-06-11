@@ -45,6 +45,21 @@ def audio_handler(data, audio_client_addr):
             connect_cursor.close()
             db_connect.close()
             return -1
+    elif data.get_audio_status() == AUDIO_STATU_CLOSE:
+        print("AUDIO_STATU_CLOSE")
+        sql = "SELECT ip,audioPagePort FROM userTable where count = '%s'" % (data.get_friend_count())
+        connect_cursor.execute(sql)
+        result = connect_cursor.fetchall()
+        # print("result:", result)
+        if len(result) == 1:
+            for row in result:
+                destination_addr = (row[0], int(row[1]))
+            data.change_name()
+            udpSerSock.sendto(data.audio_struct_pack(), destination_addr)
+        elif len(result) == 0:
+            connect_cursor.close()
+            db_connect.close()
+            return -1
     # 更新语音server端口
     elif data.get_audio_status() == AUDIO_STATUS_UPDATE_SERVER_PORT:
         print("AUDIO_STATUS_UPDATE_SERVER_PORT")
@@ -57,7 +72,7 @@ def audio_handler(data, audio_client_addr):
         sql = "UPDATE userTable SET audioClientPort = %d WHERE count = '%s'" % (audio_client_addr[1], data.get_my_count())
         connect_cursor.execute(sql)
         db_connect.commit()
-
+        # 查找audio server 端口，连接 通信
         sql = "SELECT ip,audioServerPort FROM userTable where count = '%s'" % (data.get_friend_count())
         connect_cursor.execute(sql)
         result = connect_cursor.fetchall()

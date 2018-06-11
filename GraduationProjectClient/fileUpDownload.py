@@ -4,8 +4,8 @@ from myProtocol import *
 
 
 class fileClient():
-    def __init__(self, addr):
-        self.addr = addr
+    def __init__(self):
+        self.addr = (FILE_SERVER_IP, FILE_SERVER_PORT)
         self.file_data = FileStruct()
         self.file_name = ''
 
@@ -14,7 +14,7 @@ class fileClient():
         # 判断源文件是否存在
         if not os.path.exists(clientfile):
             return "fileNotExist"
-        # 设置文件传输行为：上传
+        # 设置文件传输动作：上传
         self.file_data.set_action('upload')
         # 设置文件大小
         self.file_data.set_size(os.stat(clientfile).st_size)
@@ -57,7 +57,6 @@ class fileClient():
 
     def recvFile(self,serverfile):
         '''接受文件
-        clientfile：文件要下载到的文件夹
         serverfile：从服务器上下载的文件
         '''
         # 若本地file文件夹不存在则创建
@@ -69,7 +68,6 @@ class fileClient():
                 return 'file dir not exist'
         # 设置文件传输行为：下载
         self.file_data.set_action('download')
-        # self.file_data.set_client_file_path(clientfile)
         self.file_data.set_server_file_path(serverfile)
         print('recvFile:',serverfile)
         # 创建tcp socket
@@ -88,8 +86,10 @@ class fileClient():
             if self.file_data.get_action() == "ok":
                 # 以收到的数据大小
                 self.recvd_size = 0
+                # 在file文件夹下创建新文件
                 fileName = os.path.join('file/', (os.path.split(serverfile))[1])
                 file = open(fileName, 'wb')
+                # 传输文件
                 while not self.recvd_size == self.file_data.get_size():
                     if self.file_data.get_size() - self.recvd_size > 1024:
                         rdata = s.recv(1024)

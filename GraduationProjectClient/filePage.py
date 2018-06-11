@@ -42,6 +42,7 @@ class FileWindow(QtWidgets.QWidget):
         self.down_btn.clicked.connect(self.pressDownloadBtn)
         # 定时器超时信号，连接到槽函数
         self.timer.timeout.connect(self.timeout)
+
         # 初始化TableWidget
         self.initTableWidget()
         # 启动定时器
@@ -50,7 +51,7 @@ class FileWindow(QtWidgets.QWidget):
     def initTableWidget(self):
         '''初始化对象时 设置表格参数'''
         header = ["fileName"]
-        # 设置两列
+        # 设置1列
         self.tableWidget.setColumnCount(1)
         # 设置列名
         self.tableWidget.setHorizontalHeaderLabels(header)
@@ -78,16 +79,21 @@ class FileWindow(QtWidgets.QWidget):
     def receiveMessage(self):
         '''接受服务器发来的数据，将所有的文件名显示出来'''
         rcv_data, chat_server_ip, chat_server_port = self.udp_client_socket.readDatagram(BUFFER_SIZE)
+        # 现将文件列表字符串解码，在转换成字符串
         self.loadData(eval(rcv_data.decode('utf-8')))
 
     def pressUpLoadBtn(self):
         '''上传文件按钮槽函数，输入文件路径，发送文件到服务器'''
         # 获取输入框中的文件路径
+        # 先获取文本
         self.file_path_name = self.up_lineEdit.text()
-        self.file_path_name = self.file_path_name.replace('%20', ' ')
-        self.file_path_name = self.file_path_name[7:-2]
+        # 如果是拖动文件，则对文件路径进行处理
+        if self.file_path_name[:4] == 'file':
+            # 将%20 替换为 空格
+            self.file_path_name = self.file_path_name.replace('%20', ' ')
+            self.file_path_name = self.file_path_name[7:-2]
         # 上传文件
-        fileclient = fileUpDownload.fileClient((FILE_SERVER_IP, FILE_SERVER_PORT))
+        fileclient = fileUpDownload.fileClient()
         ret = fileclient.sendFile(self.file_path_name)
         if ret == 'fileNotExist':
             QMessageBox.warning(self, ("Warning"), ("文件不存在"), QMessageBox.Yes)
@@ -100,9 +106,14 @@ class FileWindow(QtWidgets.QWidget):
         '''下载文件按钮槽函数，从服务器下载文件到本地file文件夹'''
         # 获取输入框中文件名
         self.file_name = self.down_lineEdit.text()
-        fileclient = fileUpDownload.fileClient((FILE_SERVER_IP, FILE_SERVER_PORT))
+        fileclient = fileUpDownload.fileClient()
         ret = fileclient.recvFile(self.file_name)
         if ret == 'downLoadSuccess':
             QMessageBox.warning(self, ("Warning"), ("下载成功"), QMessageBox.Yes)
         elif ret == 'downLoadFaile':
             QMessageBox.warning(self, ("Warning"), ("下载失败"), QMessageBox.Yes)
+
+    def closeEvent(self, QCloseEvent):
+        '''点击x号,关闭自己界面'''
+        # 关闭自己界面
+        self.close()

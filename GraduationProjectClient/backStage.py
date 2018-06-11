@@ -10,13 +10,19 @@ import pymysql
 
 
 class HouTaiWindow(QtWidgets.QWidget):
-    # 打开数据库
-    db_connect = pymysql.connect(host = "localhost", user = "root", passwd = "ljgubuntu", db = "graduationPorject", charset='utf8')
-    connect_cursor = db_connect.cursor()
-    print("connect db ok")
-
     def __init__(self):
         super(HouTaiWindow, self).__init__()
+        self.openDB = True
+        try:
+            # 打开数据库
+            self.db_connect = pymysql.connect(host="localhost", user="root", passwd="ljgubuntu", db="graduationPorject",
+                                         charset='utf8')
+            self.connect_cursor = self.db_connect.cursor()
+            print("connect db ok")
+        except:
+            print('open db file')
+            self.openDB = False
+
         self.timer = QTimer()
         self.newItem0 = None
         self.newItem1 = None
@@ -49,39 +55,42 @@ class HouTaiWindow(QtWidgets.QWidget):
 
     def loadData(self):
         '''加载数据'''
-        # 行归0
-        self.tableWidget.setRowCount(0)
-        self.tableWidget.clearContents()
-        #  取出所有的数据
-        sql = "SELECT * FROM userTable"
-        self.connect_cursor.execute(sql)
-        result = self.connect_cursor.fetchall()
-        # print(result)
-        # 在线 非在线人数计数
-        all_count_num = 0
-        online_count_num = 0
-        for row in result:
-            all_count_num += 1
-            if row[2] == 1:
-                online_count_num += 1
-            # 创建QTableWidgetItem对象，显示到表中
-            self.newItem0 = QTableWidgetItem(row[0])
-            self.newItem1 = QTableWidgetItem(row[1])
-            self.newItem2 = QTableWidgetItem(str(row[2]))
-            self.newItem3 = QTableWidgetItem(row[3])
-            self.newItem4 = QTableWidgetItem(str(row[4]))
-            # 当前行数
-            row_count = self.tableWidget.rowCount()
-            self.tableWidget.insertRow(row_count)
-            self.tableWidget.setItem(row_count, 0, self.newItem0)
-            self.tableWidget.setItem(row_count, 1, self.newItem1)
-            self.tableWidget.setItem(row_count, 2, self.newItem2)
-            self.tableWidget.setItem(row_count, 3, self.newItem3)
-            self.tableWidget.setItem(row_count, 4, self.newItem4)
+        if self.openDB == False:
+            QMessageBox.warning(self, ("Warning"), ("连接数据库失败"), QMessageBox.Yes)
+        else:
+            # 行归0
+            self.tableWidget.setRowCount(0)
+            self.tableWidget.clearContents()
+            #  取出所有的数据
+            sql = "SELECT * FROM userTable"
+            self.connect_cursor.execute(sql)
+            result = self.connect_cursor.fetchall()
+            # print(result)
+            # 在线 非在线人数计数
+            all_count_num = 0
+            online_count_num = 0
+            for row in result:
+                all_count_num += 1
+                if row[2] == 1:
+                    online_count_num += 1
+                # 创建QTableWidgetItem对象，显示到表中
+                self.newItem0 = QTableWidgetItem(row[0])
+                self.newItem1 = QTableWidgetItem(row[1])
+                self.newItem2 = QTableWidgetItem(str(row[2]))
+                self.newItem3 = QTableWidgetItem(row[3])
+                self.newItem4 = QTableWidgetItem(str(row[4]))
+                # 当前行数
+                row_count = self.tableWidget.rowCount()
+                self.tableWidget.insertRow(row_count)
+                self.tableWidget.setItem(row_count, 0, self.newItem0)
+                self.tableWidget.setItem(row_count, 1, self.newItem1)
+                self.tableWidget.setItem(row_count, 2, self.newItem2)
+                self.tableWidget.setItem(row_count, 3, self.newItem3)
+                self.tableWidget.setItem(row_count, 4, self.newItem4)
 
 
-        self.all_num_label.setText('总人数: %d'%all_count_num)
-        self.online_label.setText('在线: %d'%online_count_num)
+            self.all_num_label.setText('总人数: %d'%all_count_num)
+            self.online_label.setText('在线: %d'%online_count_num)
 
 
     def addBtnClicked(self):
@@ -143,12 +152,6 @@ class HouTaiWindow(QtWidgets.QWidget):
         # 时间显示格式
         time_str = time.toString("yyyy-MM-dd hh:mm:ss")
         self.lcdNumber.display(time_str)
-
-
-def houTaiPage():
-    hou_tai_window = HouTaiWindow()
-    hou_tai_window.show()
-    hou_tai_window.exec_()
 
 
 def main():

@@ -63,9 +63,8 @@ class ChatWindow(QtWidgets.QWidget):
         self.udp_client_socket.readyRead.connect(self.receiveMessage)
 
         # 语音界面
-        self.audio_window = audioPage.AudioWindow()
-        # 语音消息按钮
         self.audio_window = None
+        # 语音消息按钮
         self.audio_Btn.clicked.connect(self.pressAudioBtn)
 
         # 更新ip 和 端口
@@ -74,8 +73,11 @@ class ChatWindow(QtWidgets.QWidget):
         self.updateUserList()
 
     def closeEvent(self, QCloseEvent):
+        '''关闭按钮'''
+        # 设置消息内容
         self.data.set_my_count(self.myname_label.text())
         self.data.set_chat_status(CHAT_STATUS_EXIT)
+        # 告诉服务器，更新此人登录状态为0
         self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP),
                                              CHAT_SERVER_PORT)
 
@@ -88,7 +90,7 @@ class ChatWindow(QtWidgets.QWidget):
         time_str = time.toString("yyyy-MM-dd hh:mm:ss")
         # 更新时间
         self.lcdNumber.display(time_str)
-        # 更新列表中用户的状态
+        # 更新用户列表
         self.updateUserList()
 
     def pressAudioBtn(self):
@@ -109,13 +111,13 @@ class ChatWindow(QtWidgets.QWidget):
         self.data.set_chat_status(CHAT_STATUS_AUDIO_REQUEST)
         self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP),
                                              CHAT_SERVER_PORT)
-        # 发送点击语音按钮信号
+        # 发送 点击语音按钮 信号
         self.click_audio_btn_signal.emit("等待对方接听...", self.myname_label.text(), self.friendname_label.text())
         # 显示语音界面
         self.audio_window.show()
         # 更新语音界面端口
         self.audio_window.updateAudioPort()
-        self.audio_window.exec_()
+#        self.audio_window.exec_()
 
 
     def pressFileBtn(self):
@@ -124,7 +126,7 @@ class ChatWindow(QtWidgets.QWidget):
         self.file_window = filePage.FileWindow()
         # 显示文件界面
         self.file_window.show()
-        self.file_window.exec_()
+#        self.file_window.exec_()
 
 
     def pressSendBtn(self):
@@ -164,7 +166,7 @@ class ChatWindow(QtWidgets.QWidget):
         self.chat_record_page = chatRecordPage.ChatRecordWindow(self.myname_label.text(), self.friendname_label.text())
         # 显示聊天记录界面
         self.chat_record_page.show()
-        self.chat_record_page._exec()
+#        self.chat_record_page._exec()
 
 
     def receiveMessage(self):
@@ -194,7 +196,7 @@ class ChatWindow(QtWidgets.QWidget):
             self.show_msg_textEdit.append(self.data.get_time() + "    " + self.data.get_my_count() + ":")
             self.show_msg_textEdit.append(self.data.get_message())
         elif self.data.get_chat_status() == CHAT_STATUS_LIST:
-            print("receive_message:CHAT_STATUS_LIST")
+            # print("receive_message:CHAT_STATUS_LIST")
             message = self.data.get_message().split("+")
             # print(type(message))
             # print(message)
@@ -230,6 +232,7 @@ class ChatWindow(QtWidgets.QWidget):
 
 
     def on_treeWidget_doubleClicked(self):
+        '''双击好友列表'''
         item = self.friends_treeWidget.currentItem()
         item.setBackground(0, QBrush(QColor("#FFFFFF")))
         self.friendname_label.setText(item.text(0))
@@ -247,20 +250,11 @@ class ChatWindow(QtWidgets.QWidget):
         self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP),
                                              CHAT_SERVER_PORT)
 
-
-
     def updateUserList(self):
-        '''给系统要好友账户显示出来'''
+        '''更新好友列表'''
         self.data.set_my_count(self.myname_label.text())
         self.data.set_chat_status(CHAT_STATUS_LIST)
         self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP), CHAT_SERVER_PORT)
-
-    def checkUserStatus(self):
-        '''检查用户的状态：在线，离线'''
-        self.data.set_my_count(self.myname_label.text())
-        self.data.set_chat_status(CHAT_STATUS_CHECK_STATUS)
-        self.udp_client_socket.writeDatagram(self.data.chat_struct_pack(), QHostAddress(CHAT_SERVER_IP),
-                                             CHAT_SERVER_PORT)
 
     def update_ip_port(self):
         '''更新我的端口和ip'''
@@ -272,6 +266,7 @@ class ChatWindow(QtWidgets.QWidget):
 
 
 
+'''
 def chatpage(count):
     chat_window = ChatWindow()
     # 设置自己账户名
@@ -280,3 +275,4 @@ def chatpage(count):
     chat_window.update_ip_port()
     chat_window.give_my_friends()
     chat_window.exec_()
+'''

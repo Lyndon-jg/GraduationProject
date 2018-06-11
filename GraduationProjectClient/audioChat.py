@@ -8,18 +8,15 @@ from PyQt5.QtCore import QThread
 from myProtocol import *
 # https://blog.csdn.net/lu_embedded/article/details/50784355
 
-# 指定每个缓冲区的帧数
-# 块
+# 每次读取和播放的帧数
 CHUNK = 1024
-# 采样大小和格式
-# paInt16        = pa.paInt16        #: 16 bit int
-# 16位整型数，两个字节
+# 采样大小（精度）
 FORMAT = pyaudio.paInt16
 # 通道数
 CHANNELS = 1
 # 采样频率：每秒采集数据的次数
 RATE = 44100
-# 每次记录时间 即间隔0.5s发送一次
+# 每次记录的时间 即间隔0.5s发送一次
 RECORD_SECONDS = 0.5
 
 class AudioServer(QThread):
@@ -92,7 +89,9 @@ class AudioServer(QThread):
         connect, addr = self.audio_server_tcp_socket.accept()
         print("remote AUDIO client success connected...")
         data = "".encode("utf-8")
+        # 有效载荷大小（8）
         payloadSize = struct.calcsize("L")
+        # 创建新的音频流
         self.stream = self.p.open(format=FORMAT,
                                   channels=CHANNELS,
                                   rate=RATE,
@@ -102,14 +101,24 @@ class AudioServer(QThread):
         while self.closeThreadFlag == 0:
             while len(data) < payloadSize:
                 data += connect.recv(81920)
+            # 收到数据大小（bytes类型）
             recvSize = data[:payloadSize]
+            # 有效数据
             data = data[payloadSize:]
+            # 收到的数据大小（返回元组（xxx，））
             unpackedDataSize = struct.unpack("L", recvSize)[0]
-            while len(data) < unpackedDataSize:
-                data += connect.recv(81920)
+            print(unpackedDataSize)
+#            while len(data) < unpackedDataSize:
+#                data += connect.recv(81920)
+            # 帧数据
             frameData = data[:unpackedDataSize]
-            data = data[unpackedDataSize:]
+            # 剩余数据
+#            data = data[unpackedDataSize:]
+            data = "".encode("utf-8")
+#            print(len(data))
+            # 反序列化帧数据
             frames = pickle.loads(frameData)
+            # 输出每一帧的数据
             for frame in frames:
                 self.stream.write(frame, CHUNK)
 
@@ -157,7 +166,8 @@ class AudioClient(QThread):
         print("AUDIO client starts...")
 
         while True:
-            # 想服务器要对方的ip, 端口，并联接
+            # 更新自己端口
+            # 向服务器要对方的ip, 端口，并联接
             self.audio_data.set_my_count(self.my_count)
             self.audio_data.set_friend_count(self.friend_count)
             self.audio_data.set_audio_status(AUDIO_STATUS_UPDATE_CLIENT_PORT)
@@ -168,6 +178,7 @@ class AudioClient(QThread):
             self.audio_server_port = self.audio_data.get_audio_server_port()
             self.ADDR = (self.audio_server_ip, self.audio_server_port)
             print('audio client :server addr is', self.ADDR)
+
             try:
                 self.audio_server_tcp_socket.connect(self.ADDR)
                 break
@@ -175,7 +186,9 @@ class AudioClient(QThread):
                 print('connect faile, trying')
                 time.sleep(1)
                 continue
+
         print("AUDIO client connected...")
+        # 创建新的数据流
         self.stream = self.p.open(format=FORMAT,
                              channels=CHANNELS,
                              rate=RATE,
@@ -183,9 +196,11 @@ class AudioClient(QThread):
                              frames_per_buffer=CHUNK)
         while self.closeThreadFlag == 0 and self.stream.is_active() :
             frames = []
+            # 每0.5s采集的帧
             for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
                 data = self.stream.read(CHUNK)
                 frames.append(data)
+            # 语音帧数据序列化(转换成可存储或传输的形式)
             senddata = pickle.dumps(frames)
             try:
                 self.audio_server_tcp_socket.sendall(struct.pack("L", len(senddata)) + senddata)

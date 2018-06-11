@@ -52,10 +52,10 @@ def main():
     except:
         print('open db file')
         return -1
-    # 接受数据对象
+    # 接收数据对象
     data = LoginStruct()
     while True:
-        print("login_server waitting for login message...")
+        print("waitting for login message...")
         # 接收客户端发过来的消息和客户端地址
         rcv_data, login_client_addr = udp_login_server_socket.recvfrom(BUFFER_SIZE)
         data.set_rcv_data(rcv_data)

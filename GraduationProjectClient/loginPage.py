@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import (QMessageBox, QLineEdit)
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
-# 加载ui文件
 from PyQt5.uic import loadUi
 from PyQt5.QtNetwork import (QUdpSocket, QHostAddress)
 from PyQt5.QtCore import Qt
@@ -18,7 +17,7 @@ class LoginWindow(QtWidgets.QWidget):
 
         # 关闭页面 就销毁对象
         self.setAttribute(Qt.WA_DeleteOnClose)
-        # 创建udp客户端socket
+        # 创建udp socket
         self.udp_client_socket = QUdpSocket()
         # 收发数据对象
         self.data = LoginStruct()
@@ -26,9 +25,12 @@ class LoginWindow(QtWidgets.QWidget):
         self.register_window = None
         # 聊天界面空对象
         self.chat_window = None
+        # 后台界面空对象
+        self.houtai_window = None
 
         # 设置背景图片
         background = QPixmap("img/login_background.jpeg")
+        # 图片缩放
         background = background.scaled(self.background_label.width(),self.background_label.width())
         self.background_label.setPixmap(background)
         # 设置输入密码框
@@ -70,7 +72,7 @@ class LoginWindow(QtWidgets.QWidget):
         self.close()
         # 显示注册界面
         self.register_window.show()
-        self.register_window.exec_()
+#        self.register_window.exec_()
 
 
     def receiveMessage(self):
@@ -83,10 +85,11 @@ class LoginWindow(QtWidgets.QWidget):
             self.close()
             self.chat_window = chatPage.ChatWindow(self.count_lineEdit.text())
             self.chat_window.show()
-            self.chat_window._exec()
+#            self.chat_window._exec()
         elif self.data.get_status() == LOGIN_STATUS_OK and self.managerRadioButton.isChecked():
             self.close()
-            backStage.houTaiPage()
+            self.houtai_window = backStage.HouTaiWindow()
+            self.houtai_window.show()
         elif self.data.get_status() == LOGIN_STATUS_FAIL:
             QMessageBox.information(self, ("information"), ("""帐号或密码错误"""), QMessageBox.Yes)
 
